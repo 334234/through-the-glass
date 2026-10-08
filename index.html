@@ -87,8 +87,15 @@
     width: 100%;
     height: 100%;
     z-index: 35;
-    pointer-events: auto;
+    pointer-events: none; /* Let clicks pass through to links & typography underneath; wiping is handled on the poster itself */
+  }
+
+  .poster-sheet {
     cursor: crosshair;
+  }
+
+  .poster-sheet a, .poster-sheet button, .typo-fragment-interactive {
+    cursor: pointer;
   }
 
   .window-glass-overlay {
@@ -368,9 +375,9 @@
 <div class="my-6 relative">
 <!-- Primary Interactive Entry Point for Act 01 with hover affordance -->
 <a class="cloth-store-hero-link group select-none block" href="javascript:void(0)" id="vintage-cloth-store-hero-entry" onclick="openModal('store')">
-<div class="font-hn-black text-[12.5vw] sm:text-[9.2vw] leading-[0.84] text-black tracking-tighter uppercase transition-colors group-hover:text-[#e63946]">
-<div class="">The Vintage</div>
-<div class="-mt-1 sm:-mt-3">Cloth Store</div>
+<div class="font-hn-black text-[12.5vw] sm:text-[9.2vw] leading-[0.84] text-black tracking-tighter uppercase">
+<div class=""><span class="transition-colors duration-300 group-hover:text-[#00a8e8]">The</span> <span class="transition-colors duration-300 group-hover:text-[#e63946]">Vintage</span></div>
+<div class="-mt-1 sm:-mt-3"><span class="transition-colors duration-300 group-hover:text-[#f4a261]">Cloth</span> <span class="transition-colors duration-300 group-hover:text-[#2a9d8f]">Store</span></div>
 </div>
 <div class="explore-badge-pill inline-flex items-center gap-2 mt-2 px-3 py-1 bg-white/90 border-2 border-black font-hn-bold text-xs uppercase tracking-wider shadow-[3px_3px_0px_#000000]">
 <span class="w-2 h-2 rounded-full bg-[#e63946] animate-ping"></span>
@@ -1180,7 +1187,8 @@
       lastPoint = { x, y };
     }
 
-    canvas.addEventListener('mousedown', (e) => {
+    // Listen on the poster (parent) instead of the canvas so links beneath stay clickable
+    poster.addEventListener('mousedown', (e) => {
       isDrawing = true;
       const rect = canvas.getBoundingClientRect();
       lastPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top };
@@ -1192,7 +1200,7 @@
       lastPoint = null;
     });
 
-    canvas.addEventListener('mousemove', (e) => {
+    poster.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -1216,7 +1224,7 @@
     });
 
     // Touch support for mobile/tablets
-    canvas.addEventListener('touchmove', (e) => {
+    poster.addEventListener('touchmove', (e) => {
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
       const x = touch.clientX - rect.left;
